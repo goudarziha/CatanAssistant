@@ -9,19 +9,21 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 public class Start extends Activity implements View.OnClickListener {
 
+    private CountDownTimer cdTimer;
     ImageView dice1, dice2;
     boolean running = false;
     TextView round, timer;
     CheckBox robber;
-    Button start, pause;
+    Button start, pause, resume;
     int gameCount = 1;
     long total = 120000;
+    long interval = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,10 @@ public class Start extends Activity implements View.OnClickListener {
         pause = (Button) findViewById(R.id.bPause);
         pause.setVisibility(View.INVISIBLE);
         pause.setOnClickListener(this);
+        resume = (Button) findViewById(R.id.bResume);
+        resume.setVisibility(View.INVISIBLE);
+        resume.setOnClickListener(this);
+        robber = (CheckBox) findViewById(R.id.cbRobber);
     }
 
     @Override
@@ -47,12 +53,27 @@ public class Start extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.bRoll:
                 dice();
+                if (running == true) {
+                    total = 120000;
+                    cdTimer.cancel();
+                    countTimer();
+                } else {
+                    countTimer();
+                }
                 gameCount++;
                 pause.setVisibility(View.VISIBLE);
                 break;
             case R.id.bPause:
-
+                cdTimer.cancel();
+                running = true;
+                pause.setVisibility(View.INVISIBLE);
+                resume.setVisibility(View.VISIBLE);
                 break;
+            case R.id.bResume:
+                countTimer();
+                running = true;
+                resume.setVisibility(View.INVISIBLE);
+                pause.setVisibility(View.VISIBLE);
         }
     }
 
@@ -65,9 +86,29 @@ public class Start extends Activity implements View.OnClickListener {
         dice1.setImageResource(dice[i]);
         dice2.setImageResource(dice[j]);
         round.setText("Round " + gameCount);
+        if ((i + 1 + (j + 1) == 7) && (robber.isChecked())) {
+            robber();
+        }
     }
 
-    public void countdown() {
+    private void robber() {
 
+    }
+
+    public void countTimer() {
+        cdTimer = new CountDownTimer(total, 1000) {
+            @Override
+            public void onTick(long l) {
+                total = l;
+                timer.setText("Time Left: " + new SimpleDateFormat("mm:ss").format(new Date(l)));
+                running = true;
+            }
+
+            @Override
+            public void onFinish() {
+                timer.setText("Time's up!");
+                running = false;
+            }
+        }.start();
     }
 }

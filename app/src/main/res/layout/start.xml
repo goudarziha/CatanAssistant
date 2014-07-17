@@ -68,4 +68,20 @@
         android:id="@+id/bPause"
         android:layout_gravity="center" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resume"
+        android:id="@+id/bResume"
+        android:layout_gravity="center" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Robber in play"
+        android:id="@+id/cbRobber"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_gravity="center" />
+
 </LinearLayout>

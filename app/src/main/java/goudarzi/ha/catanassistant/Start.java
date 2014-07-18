@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +30,9 @@ public class Start extends Activity implements View.OnClickListener {
     long total = 120000;
     long interval = 1000;
     String time;
-    int newTime;
+    long newTime;
+    int rollSound = 0;
+    SoundPool sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,8 @@ public class Start extends Activity implements View.OnClickListener {
         setContentView(R.layout.start);
         initialize();
         time = getIntent().getExtras().getString("time");
-        newTime = Integer.parseInt(time);
+        newTime = Long.parseLong(time);
+        newTime = newTime * 60000;
     }
 
     public void initialize() {
@@ -53,6 +58,8 @@ public class Start extends Activity implements View.OnClickListener {
         resume.setVisibility(View.INVISIBLE);
         resume.setOnClickListener(this);
         robber = (CheckBox) findViewById(R.id.cbRobber);
+        sp = new SoundPool(5, 3, 0);
+        rollSound = sp.load(this, R.raw.dicesound, 1);
     }
 
     @Override
@@ -61,14 +68,15 @@ public class Start extends Activity implements View.OnClickListener {
             case R.id.bRoll:
                 dice();
                 if (newTime > 0) {
-                    total = newTime * 60000;
-                    if (running == true) {
-                        total = 120000;
-                        cdTimer.cancel();
-                        countTimer();
-                    } else {
-                        countTimer();
-                    }
+                    total = newTime;
+                } else {
+                    countTimer();
+                }
+                if (running == true) {
+                    cdTimer.cancel();
+                    countTimer();
+                } else {
+                    countTimer();
                 }
                 gameCount++;
                 pause.setVisibility(View.VISIBLE);
@@ -96,6 +104,7 @@ public class Start extends Activity implements View.OnClickListener {
         dice1.setImageResource(dice[i]);
         dice2.setImageResource(dice[j]);
         round.setText("Round " + gameCount);
+        sp.play(rollSound, 1, 1, 0, 0, 1);
         if ((i + 1 + (j + 1) == 7) && (robber.isChecked())) {
             robber();
         }

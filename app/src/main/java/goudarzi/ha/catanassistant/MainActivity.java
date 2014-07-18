@@ -1,6 +1,8 @@
 package goudarzi.ha.catanassistant;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -43,8 +45,23 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
                 break;
             case R.id.bAbout:
-
+                about();
                 break;
         }
+    }
+
+    public void about() {
+        AlertDialog.Builder lb = new AlertDialog.Builder(this);
+        lb.setTitle("About");
+        lb.setMessage("Catan Assistant was created to assist players who require dice and a timer to make sure " +
+                "the game stays fluid and fun. You have the option to set the countdown time, as well as " +
+                "checking the robber box, if the robber is in play. - Amir")
+                .setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        lb.create().show();
     }
 }

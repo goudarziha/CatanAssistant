@@ -1,6 +1,9 @@
 package goudarzi.ha.catanassistant;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -29,10 +32,10 @@ public class Start extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
-        initilize();
+        initialize();
     }
 
-    public void initilize() {
+    public void initialize() {
         round = (TextView) findViewById(R.id.tv1);
         timer = (TextView) findViewById(R.id.tvTimer);
         dice1 = (ImageView) findViewById(R.id.ivOne);
@@ -92,7 +95,16 @@ public class Start extends Activity implements View.OnClickListener {
     }
 
     private void robber() {
-
+        AlertDialog.Builder lb = new AlertDialog.Builder(this);
+        lb.setTitle("The Robber!");
+        lb.setMessage("You have encountered the Robber, if your hand contains more than 7 cards, return half to the bank.")
+                .setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        lb.create().show();
     }
 
     public void countTimer() {

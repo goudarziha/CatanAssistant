@@ -27,12 +27,16 @@ public class Start extends Activity implements View.OnClickListener {
     int gameCount = 1;
     long total = 120000;
     long interval = 1000;
+    String time;
+    int newTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
         initialize();
+        time = getIntent().getExtras().getString("time");
+        newTime = Integer.parseInt(time);
     }
 
     public void initialize() {
@@ -56,12 +60,15 @@ public class Start extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.bRoll:
                 dice();
-                if (running == true) {
-                    total = 120000;
-                    cdTimer.cancel();
-                    countTimer();
-                } else {
-                    countTimer();
+                if (newTime > 0) {
+                    total = newTime * 60000;
+                    if (running == true) {
+                        total = 120000;
+                        cdTimer.cancel();
+                        countTimer();
+                    } else {
+                        countTimer();
+                    }
                 }
                 gameCount++;
                 pause.setVisibility(View.VISIBLE);

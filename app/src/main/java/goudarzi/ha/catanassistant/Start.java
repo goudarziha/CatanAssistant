@@ -2,7 +2,6 @@ package goudarzi.ha.catanassistant;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +26,6 @@ public class Start extends Activity implements View.OnClickListener {
     Button start, pause, resume;
     int gameCount = 1;
     long total = 120000;
-    long interval = 1000;
     String time;
     long newTime;
     int rollSound = 0;
@@ -42,6 +39,9 @@ public class Start extends Activity implements View.OnClickListener {
         time = getIntent().getExtras().getString("time");
         newTime = Long.parseLong(time);
         newTime = newTime * 60000;
+        if (newTime > 0) {
+            timer.setText("Time left: " + new SimpleDateFormat("mm:ss").format(new Date(newTime / 1000)));
+        }
     }
 
     public void initialize() {
@@ -67,19 +67,22 @@ public class Start extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.bRoll:
                 dice();
+                gameCount++;
                 if (newTime > 0) {
                     total = newTime;
                 } else {
                     countTimer();
                 }
-                if (running == true) {
+                if (running) {
                     cdTimer.cancel();
                     countTimer();
+                    pause.setVisibility(View.VISIBLE);
+                    resume.setVisibility(View.INVISIBLE);
                 } else {
                     countTimer();
+                    pause.setVisibility(View.INVISIBLE);
+                    resume.setVisibility(View.VISIBLE);
                 }
-                gameCount++;
-                pause.setVisibility(View.VISIBLE);
                 break;
             case R.id.bPause:
                 cdTimer.cancel();
@@ -89,7 +92,7 @@ public class Start extends Activity implements View.OnClickListener {
                 break;
             case R.id.bResume:
                 countTimer();
-                running = true;
+                running = false;
                 resume.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.VISIBLE);
         }
